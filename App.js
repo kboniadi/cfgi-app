@@ -7,24 +7,23 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 // Used to navigate from page to page, especially when we go from a different component to another component
 import { createStackNavigator } from "@react-navigation/stack";
 // All of our screens, importing them here so our navigation stack is aware of the system hierarchy
-import { HomeScreen } from "./app/screens/home.js";
-import { ProfileScreen } from "./app/screens/profile.js";
-import { JobScreen, DonateScreen } from "./app/screens/screens.js";
-import { FinScreen } from "./app/screens/financial.js";
-import { FinAppScreen } from "./app/screens/FinDocScreen.js";
-import { FinAppConfirmationScreen } from "./app/screens/FinAppConfirmationScreen";
-import { termsAndConditions } from "./app/screens/termsAndConditions";
 import { AppointmentScreen } from "./app/screens/appointment.js";
-import { CalendlyScreen } from "./app/screens/legalCard.js";
 import CFGIHeader from "./app/screens/cfgiHeader.js";
+import { FinScreen } from "./app/screens/financial.js";
+import { FinAppConfirmationScreen } from "./app/screens/FinAppConfirmationScreen";
+import { FinAppScreen } from "./app/screens/FinDocScreen.js";
+import { HomeScreen } from "./app/screens/home.js";
+import { CalendlyScreen } from "./app/screens/legalCard.js";
+import { ProfileScreen } from "./app/screens/profile.js";
+import { DonateScreen, JobScreen } from "./app/screens/screens.js";
+import { termsAndConditions } from "./app/screens/termsAndConditions";
 // Used to authenticate the user's credentials so they can have access to the app
 import { AuthContext } from "./app/screens/context";
 // Import sign in and create account
-import { SignIn, CreateAccount, ForgotPassword, ResetPassword } from "./app/screens/signin.js";
+import { CreateAccount, ForgotPassword, ResetPassword, SignIn } from "./app/screens/signin.js";
 // Icons used for our bottom navigation bar
-import Ionicons from "react-native-vector-icons/Ionicons";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import axios from "axios"; //connects the server to the front end
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 // Globally defining our bottom navigation bar and our system hierarchy stack
 const Stack = createStackNavigator();
@@ -59,7 +58,6 @@ export default function App() {
       },
     };
   }, []);
-
   function HomeStack({ navigation }) {
     return (
       <Stack.Navigator
@@ -284,7 +282,10 @@ export default function App() {
               name="Home"
               component={HomeStack}
               options={{
-                tabBarIcon: ({ color, size }) => <Ionicons name="home" color={color} size={size} />,
+                tabBarIcon: ({ color, size }) => (
+                  <Ionicons name="home-outline" color={color} size={size} />
+                ),
+                Ionicons,
               }}
             />
             <Tab.Screen
@@ -292,7 +293,7 @@ export default function App() {
               component={JobStack}
               options={{
                 tabBarIcon: ({ color, size }) => (
-                  <Ionicons name="briefcase" color={color} size={size} />
+                  <Ionicons name="briefcase-outline" color={color} size={size} />
                 ),
               }}
             />
@@ -301,7 +302,7 @@ export default function App() {
               component={LegalStack}
               options={{
                 tabBarIcon: ({ color, size }) => (
-                  <Ionicons name="people" color={color} size={size} />
+                  <Ionicons name="people-outline" color={color} size={size} />
                 ),
               }}
             />
@@ -318,7 +319,9 @@ export default function App() {
               name="Donate"
               component={DonateStack}
               options={{
-                tabBarIcon: ({ color, size }) => <Ionicons name="gift" color={color} size={size} />,
+                tabBarIcon: ({ color, size }) => (
+                  <Ionicons name="gift-outline" color={color} size={size} />
+                ),
               }}
             />
           </Tab.Navigator>
