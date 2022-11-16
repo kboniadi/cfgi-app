@@ -1,18 +1,18 @@
+import { Divider, Overlay, SearchBar } from "@rneui/themed";
 import * as React from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  Modal,
   ImageBackground,
+  Modal,
   ScrollView,
+  StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
 } from "react-native";
-import { SearchBar, Divider, Overlay } from "@rneui/themed";
-import LegalCard from "../screens/legalCard";
-import { useState } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
-import { useCallback } from "react";
+import { CfgiAPI } from "../apis/CfgiAPI";
+import LegalCard from "../screens/legalCard";
 
 //Attorney Data; An array of 'attorney info objects'
 //To add an attorney, add to 'users' array[] with the given attorney info as an object{} as shown below.
@@ -95,6 +95,20 @@ export const AppointmentScreen = ({ navigation }) => {
 
   const onLangOpen = useCallback(() => {
     setExpertOpen(false);
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    CfgiAPI.getAllLawyers(true).then((result) => {
+      console.log("test")
+      if (mounted) {
+        console.log(result);
+      }
+    });
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   //Attorney card list
@@ -196,7 +210,7 @@ export const AppointmentScreen = ({ navigation }) => {
   }
 
   //Searchbar State
-  const [searchJob, setSearchJob] = React.useState(null);
+  const [searchJob, setSearchJob] = useState(null);
 
   //Searching for Attorney Name; Returns cards that fit the search parameters
   if (searchJob !== null && searchJob !== "") {
@@ -215,7 +229,7 @@ export const AppointmentScreen = ({ navigation }) => {
   return (
     <ScrollView style={{ paddingTop: 30, backgroundColor: "#F7F5F9", flex: 1 }}>
       {/* //Terms and Conditions Modal */}
-      <Overlay isVisible={modalVisible} overlayStyle={{backgroundColor: "transparent"}}>
+      <Overlay isVisible={modalVisible} overlayStyle={{ backgroundColor: "transparent" }}>
         <View>
           <Modal
             animationType="slide"
