@@ -22,7 +22,8 @@ import { AuthContext } from "./app/screens/context";
 // Import sign in and create account
 import { CreateAccount, ForgotPassword, ResetPassword, SignIn } from "./app/screens/signin.js";
 // Icons used for our bottom navigation bar
-import Icon from "react-native-vector-icons/FontAwesome5";
+import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
+import Octicons from "react-native-vector-icons/Octicons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 // Globally defining our bottom navigation bar and our system hierarchy stack
@@ -302,7 +303,7 @@ export default function App() {
               component={LegalStack}
               options={{
                 tabBarIcon: ({ color, size }) => (
-                  <Ionicons name="people-outline" color={color} size={size} />
+                  <Octicons name="law" color={color} size={size} />
                 ),
               }}
             />
@@ -311,7 +312,7 @@ export default function App() {
               component={FinStack}
               options={{
                 tabBarIcon: ({ color, size }) => (
-                  <Icon name="hand-holding-usd" color={color} size={size} />
+                  <Ionicons name="cash-outline" color={color} size={size} />
                 ),
               }}
             />
@@ -320,7 +321,7 @@ export default function App() {
               component={DonateStack}
               options={{
                 tabBarIcon: ({ color, size }) => (
-                  <Ionicons name="gift-outline" color={color} size={size} />
+                  <SimpleLineIcons name="paypal" color={color} size={size} />
                 ),
               }}
             />

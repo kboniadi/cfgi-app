@@ -99,12 +99,11 @@ export const AppointmentScreen = ({ navigation }) => {
 
   useEffect(() => {
     let mounted = true;
-    CfgiAPI.getAllLawyers(true).then((result) => {
-      console.log("test")
-      if (mounted) {
-        console.log(result);
-      }
-    });
+    // CfgiAPI.getAllLawyers(true).then((result) => {
+    //   if (mounted) {
+    //     console.log(result);
+    //   }
+    // });
 
     return () => {
       mounted = false;
@@ -278,21 +277,41 @@ export const AppointmentScreen = ({ navigation }) => {
         </View>
       </Overlay>
 
-      {/* Legal Title Text */}
-      <View style={{ paddingHorizontal: 30, flex: 1 }}>
-        <Text style={styles.AsubTitle}>DIRECTORY</Text>
-        <Text style={styles.attorneyTitle}>Find A CFGI Attorney For A Consultation</Text>
-      </View>
-
       {/* Background Image "Wave" */}
       <ImageBackground
         source={require("../assets/img/legalwave.png")}
-        style={{ resizeMode: "cover", zIndex: -1 }}
+        style={{ zIndex: -1 }}
         imageStyle={{ opacity: 0.5 }}
+        resizeMode="cover"
       >
-        <View style={{ paddingHorizontal: 30 }}>
-          {/* //Reset Button */}
-          <TouchableOpacity onPress={() => resetAll()}>
+        {/* Legal Title Text */}
+        <View style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          {/* <Text style={styles.AsubTitle}>DIRECTORY</Text> */}
+          <Text style={styles.attorneyTitle}>Schedule an Appointment</Text>
+          <SearchBar
+            inputContainerStyle={{ backgroundColor: "white", borderRadius: 30, height: 35 }}
+            containerStyle={{
+              flex: 1,
+              marginTop: 20,
+              padding: 0,
+              width: "90%",
+              backgroundColor: "white",
+              borderRadius: 30,
+              borderWidth: 1,
+              borderTopColor: "#4C67F6",
+              borderEndColor: "#4C67F6",
+              borderColor: "#4C67F6",
+              borderBottomColor: "#4C67F6",
+            }}
+            placeholder="Search"
+            inputStyle={{ fontStyle: "italic", fontSize: 15 }}
+            value={searchJob}
+            onChangeText={(e) => setSearchJob(e)}
+          />
+        </View>
+        {/* <View style={{ paddingHorizontal: 30 }}> */}
+        {/* //Reset Button */}
+        {/* <TouchableOpacity onPress={() => resetAll()}>
             <Text
               style={{
                 color: "#3C65CC",
@@ -304,10 +323,10 @@ export const AppointmentScreen = ({ navigation }) => {
             >
               Reset All
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
-          {/* //Dropdown for Expertise */}
-          <Text style={{ fontWeight: "bold", fontSize: 16, marginTop: 25, color: "#3F3356" }}>
+        {/* //Dropdown for Expertise */}
+        {/* <Text style={{ fontWeight: "bold", fontSize: 16, marginTop: 25, color: "#3F3356" }}>
             EXPERTISE TYPE:
           </Text>
           <DropDownPicker
@@ -336,11 +355,11 @@ export const AppointmentScreen = ({ navigation }) => {
               zIndex: 5,
             }}
             containerStyle={{ marginTop: 10 }}
-          />
+          /> */}
 
-          {/* //Dropdown for "Language" Selection */}
-          <Text style={{ fontWeight: "bold", fontSize: 16, color: "#3F3356" }}>LANGUAGE:</Text>
-          <DropDownPicker
+        {/* //Dropdown for "Language" Selection */}
+        {/* <Text style={{ fontWeight: "bold", fontSize: 16, color: "#3F3356" }}>LANGUAGE:</Text> */}
+        {/* <DropDownPicker
             onOpen={onLangOpen}
             open={lang_open}
             searchable={false}
@@ -366,11 +385,11 @@ export const AppointmentScreen = ({ navigation }) => {
               zIndex: 1,
             }}
             containerStyle={{ marginTop: 10, marginBottom: 10 }}
-          />
-        </View>
+          /> */}
+        {/* </View> */}
 
         {/* //Divider */}
-        <Divider
+        {/* <Divider
           style={{
             height: 1.5,
             backgroundColor: "#E6E6E6",
@@ -380,35 +399,16 @@ export const AppointmentScreen = ({ navigation }) => {
             width: "85%",
             zIndex: -1,
           }}
-        />
+        /> */}
 
         {/* //Results Text & Attorney Name Searchbar */}
         <View style={{ padding: 30, flexDirection: "row", paddingBottom: 0 }}>
           <Text style={styles.legalResults}> {cards.length} Results</Text>
-          <SearchBar
-            inputContainerStyle={{ backgroundColor: "white", borderRadius: 30, height: 35 }}
-            containerStyle={{
-              flex: 1,
-              margin: 0,
-              padding: 0,
-              backgroundColor: "white",
-              borderRadius: 30,
-              borderWidth: 1,
-              borderTopColor: "#4C67F6",
-              borderEndColor: "#4C67F6",
-              borderColor: "#4C67F6",
-              borderBottomColor: "#4C67F6",
-            }}
-            placeholder="Type Attorney Name"
-            inputStyle={{ fontStyle: "italic", fontSize: 15 }}
-            value={searchJob}
-            onChangeText={(e) => setSearchJob(e)}
-          />
         </View>
       </ImageBackground>
 
       {/* Where the cards populate or appear */}
-      <View style={{ padding: 30, marginBottom: 15 }}>{cards}</View>
+      <View style={{ paddingHorizontal: 30, paddingBottom: 30, marginBottom: 15 }}>{cards}</View>
     </ScrollView>
   );
 };
