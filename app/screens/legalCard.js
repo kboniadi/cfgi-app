@@ -108,7 +108,7 @@ export default function LegalCard({
                         style={{ flexBasis: "30%", marginHorizontal: 1, marginVertical: 2 }}
                       >
                         <ControlledTooltip
-                          popover={<Text>{x}</Text>}
+                          popover={<Text style={{ color: "#fff" }}>{x}</Text>}
                           backgroundColor={"rgb(250, 173, 20)"}
                           width={200}
                         >
@@ -135,7 +135,7 @@ export default function LegalCard({
                         style={{ flexBasis: "30%", marginHorizontal: 1, marginVertical: 2 }}
                       >
                         <ControlledTooltip
-                          popover={<Text>{x}</Text>}
+                          popover={<Text style={{ color: "#fff" }}>{x}</Text>}
                           backgroundColor={"rgb(32, 137, 220)"}
                           width={200}
                         >
@@ -162,7 +162,7 @@ export default function LegalCard({
                         style={{ flexBasis: "30%", marginHorizontal: 1, marginVertical: 2 }}
                       >
                         <ControlledTooltip
-                          popover={<Text>{x}</Text>}
+                          popover={<Text style={{ color: "#fff" }}>{x}</Text>}
                           backgroundColor={"rgb(82, 196, 26)"}
                           width={200}
                         >
@@ -380,7 +380,9 @@ export default function LegalCard({
 const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: "white",
-    borderRadius: 10,
+    borderColor: "black",
+    borderWidth: 1,
+    borderRadius: 18,
     elevation: 1,
     marginTop: 10,
     flex: 1,
@@ -389,9 +391,6 @@ const styles = StyleSheet.create({
   content: {
     padding: 20,
     paddingBottom: 30,
-    borderColor: "black",
-    borderWidth: 1,
-    borderRadius: 18,
   },
   //For modal; sets the modal style framework
   centeredView: {
