@@ -1,9 +1,10 @@
-import React from "react";
-import { StyleSheet, View, TouchableOpacity, Modal, Text, Pressable, Image } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
-import { Linking } from "react-native";
+import { Badge, Text, Tooltip } from "@rneui/base";
+import React, { useState } from "react";
+import { Image, Modal, Pressable, StyleSheet, TouchableOpacity, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import { WebView } from "react-native-webview";
+import GenerateAcronym from "../utilities/acronym-builder";
 
 //Global variable that allows us to share the selected attorney 'calendly' link with CalendlyScreen component below
 var link = "";
@@ -13,6 +14,22 @@ export const CalendlyScreen = () => {
   return (
     //Webview component that takes the Calendly link of attorney
     <WebView source={{ uri: link }} />
+  );
+};
+
+const ControlledTooltip = (props) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <Tooltip
+      visible={open}
+      onOpen={() => {
+        setOpen(true);
+      }}
+      onClose={() => {
+        setOpen(false);
+      }}
+      {...props}
+    />
   );
 };
 
@@ -29,6 +46,7 @@ export default function LegalCard({
   hours,
   phone,
   calendly,
+  states,
 }) {
   //Modal state
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -39,8 +57,8 @@ export default function LegalCard({
       <View style={styles.centeredView}>
         <Modal
           animationType="slide"
-          transparent={true}
           visible={modalVisible}
+          presentationStyle={"pageSheet"}
           onRequestClose={() => {
             setModalVisible(!modalVisible);
           }}
@@ -49,20 +67,120 @@ export default function LegalCard({
             <View style={styles.modalView}>
               {/* Back button for Attorney Modal Profile */}
               <Pressable onPress={() => setModalVisible(!modalVisible)}>
-                <AntDesign name="arrowleft" size={24} color="#459EFF" />
+                <AntDesign name="arrowleft" size={24} />
               </Pressable>
-              {/* Attorney Default Profile Image*/}
-              <Image
+              <View
                 style={{
-                  alignSelf: "center",
-                  borderRadius: 50,
-                  height: "13%",
-                  resizeMode: "contain",
+                  marginTop: 20,
+                  flexDirection: "row",
                 }}
-                source={require("../assets/img/attorneydefault.png")}
-              />
+              >
+                <View
+                  style={{
+                    display: "flex",
+                    flex: 0.3,
+                  }}
+                >
+                  <Image
+                    style={{
+                      width: 100,
+                      height: 110,
+                    }}
+                    source={require("../assets/img/attorneydefault.png")}
+                    resizeMode={"contain"}
+                  />
+                </View>
+                <View style={{ flex: 0.7, marginLeft: 20 }}>
+                  <Text h4 h4Style={{ fontWeight: "500" }}>
+                    {name}
+                  </Text>
+                  <Text>States:</Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      flexWrap: "wrap",
+                      flexGrow: 1,
+                    }}
+                  >
+                    {states.map((x, index) => (
+                      <View
+                        key={`${index}${x}`}
+                        style={{ flexBasis: "30%", marginHorizontal: 1, marginVertical: 2 }}
+                      >
+                        <ControlledTooltip
+                          popover={<Text>{x}</Text>}
+                          backgroundColor={"rgb(250, 173, 20)"}
+                          width={200}
+                        >
+                          <Badge
+                            badgeStyle={{ width: "100%" }}
+                            status="warning"
+                            value={GenerateAcronym(x)}
+                          />
+                        </ControlledTooltip>
+                      </View>
+                    ))}
+                  </View>
+                  <Text>Languages:</Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      flexWrap: "wrap",
+                      flexGrow: 1,
+                    }}
+                  >
+                    {languages.map((x, index) => (
+                      <View
+                        key={`${index}${x}`}
+                        style={{ flexBasis: "30%", marginHorizontal: 1, marginVertical: 2 }}
+                      >
+                        <ControlledTooltip
+                          popover={<Text>{x}</Text>}
+                          backgroundColor={"rgb(32, 137, 220)"}
+                          width={200}
+                        >
+                          <Badge
+                            badgeStyle={{ width: "100%" }}
+                            status="primary"
+                            value={GenerateAcronym(x)}
+                          />
+                        </ControlledTooltip>
+                      </View>
+                    ))}
+                  </View>
+                  <Text>Expertise:</Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      flexWrap: "wrap",
+                      flexGrow: 1,
+                    }}
+                  >
+                    {expertise.map((x, index) => (
+                      <View
+                        key={`${index}${x}`}
+                        style={{ flexBasis: "30%", marginHorizontal: 1, marginVertical: 2 }}
+                      >
+                        <ControlledTooltip
+                          popover={<Text>{x}</Text>}
+                          backgroundColor={"rgb(82, 196, 26)"}
+                          width={200}
+                        >
+                          <Badge
+                            badgeStyle={{ width: "100%" }}
+                            status="success"
+                            value={GenerateAcronym(x)}
+                          />
+                        </ControlledTooltip>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              </View>
+              {/* Attorney Default Profile Image*/}
+
               {/* Attorney Name */}
-              <Text
+              {/* <Text
                 style={{
                   paddingTop: 10,
                   fontSize: 18,
@@ -72,11 +190,15 @@ export default function LegalCard({
                 }}
               >
                 {name}
-              </Text>
+              </Text> */}
               {/* Shows avvo link and/or linkedIn link if provided */}
-              {avvo !== "" ? (
+              {/* {avvo !== "" ? (
                 <Text
-                  style={{ textAlign: "center", color: "#459EFF", textDecorationLine: "underline" }}
+                  style={{
+                    textAlign: "center",
+                    color: "#459EFF",
+                    textDecorationLine: "underline",
+                  }}
                   onPress={() => {
                     Linking.openURL(avvo);
                   }}
@@ -98,7 +220,7 @@ export default function LegalCard({
                 >
                   LinkedIn
                 </Text>
-              ) : null}
+              ) : null} */}
 
               {/* Attorney Information that you can scroll */}
               <ScrollView>
@@ -173,30 +295,80 @@ export default function LegalCard({
         <TouchableOpacity onPress={() => setModalVisible(true)}>
           <View style={styles.content}>
             <View style={{ flexDirection: "row" }}>
-              <Image
+              <View
                 style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                   flex: 0.2,
-                  height: "100%",
-                  resizeMode: "contain",
-                  alignSelf: "flex-start",
                 }}
-                source={require("../assets/img/attorneydefault.png")}
-              />
+              >
+                <Image
+                  style={{
+                    margin: "auto",
+                    height: 60,
+                    width: 60,
+                  }}
+                  source={require("../assets/img/attorneydefault.png")}
+                  borderRadius={50}
+                />
+              </View>
               <View style={{ paddingLeft: 10, flex: 0.8 }}>
                 <Text
                   style={{ fontWeight: "bold", color: "#3F3356", paddingBottom: 6, fontSize: 16 }}
                 >
                   {name}
                 </Text>
-                <Text style={{ color: "#3F3356" }}>
-                  <Text style={{ fontWeight: "bold", color: "#3F3356" }}>Expertise: </Text>
-                  {expertise.join(", ")}
-                </Text>
-                <Text style={{ color: "#3F3356" }}>
-                  <Text style={{ fontWeight: "bold", color: "#3F3356" }}>Language: </Text>{" "}
-                  {languages}
-                </Text>
+                <View
+                  style={{
+                    color: "#3F3356",
+                    flex: 1,
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    flexGrow: 1,
+                  }}
+                >
+                  {states.slice(0, 2).map((x, index) => (
+                    <View
+                      key={`${index}${x}`}
+                      style={{ flexBasis: "32%", marginHorizontal: 1, marginVertical: 2 }}
+                    >
+                      <Badge
+                        badgeStyle={{ width: "100%" }}
+                        status="warning"
+                        value={GenerateAcronym(x)}
+                      />
+                    </View>
+                  ))}
+                  {expertise.slice(0, 2).map((x, index) => (
+                    <View
+                      key={`${index}${x}`}
+                      style={{ flexBasis: "32%", marginHorizontal: 1, marginVertical: 2 }}
+                    >
+                      <Badge
+                        badgeStyle={{ width: "100%" }}
+                        status="success"
+                        value={GenerateAcronym(x)}
+                      />
+                    </View>
+                  ))}
+                  {languages.slice(0, 2).map((x, index) => (
+                    <View
+                      key={`${index}${x}`}
+                      style={{ flexBasis: "32%", marginHorizontal: 1, marginVertical: 2 }}
+                    >
+                      <Badge
+                        badgeStyle={{ width: "100%" }}
+                        status="primary"
+                        value={GenerateAcronym(x)}
+                      />
+                    </View>
+                  ))}
+                </View>
               </View>
+            </View>
+            <View style={{ position: "absolute", right: 20, bottom: 10 }}>
+              <AntDesign name="arrowright" size={24} />
             </View>
           </View>
         </TouchableOpacity>
@@ -216,31 +388,22 @@ const styles = StyleSheet.create({
   //Card content
   content: {
     padding: 20,
+    paddingBottom: 30,
     borderColor: "black",
     borderWidth: 1,
-    borderRadius: 18
+    borderRadius: 18,
   },
   //For modal; sets the modal style framework
   centeredView: {
     flex: 1,
     justifyContent: "flex-end",
     alignItems: "center",
-    //Sets the background dark, when the modal is opened
-    backgroundColor: "rgba(0, 0, 0, 0.2)",
   },
   //For modal; how the modal look
   modalView: {
-    backgroundColor: "white",
-    borderRadius: 30,
-    flex: 0.9,
-    width: "90%",
-    shadowColor: "#000",
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    marginBottom: 20,
     padding: 30,
   },
+
   //Schedule Button
   button: {
     borderRadius: 15,

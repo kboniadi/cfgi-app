@@ -1,17 +1,17 @@
-import { Divider, Overlay, SearchBar } from "@rneui/themed";
+import { AntDesign } from "@expo/vector-icons";
+import { Card } from "@rneui/base";
+import { Overlay, SearchBar } from "@rneui/themed";
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import {
   ImageBackground,
   Modal,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
-  View,
+  TouchableOpacity, View
 } from "react-native";
-import DropDownPicker from "react-native-dropdown-picker";
-import { CfgiAPI } from "../apis/CfgiAPI";
 import LegalCard from "../screens/legalCard";
 
 //Attorney Data; An array of 'attorney info objects'
@@ -28,6 +28,7 @@ const users = [
       "Matthew Blaisdell, Esquire, is a general immigration practice with a focus on providing ongoing consulting services to students, visitors, and others seeking to identify an immigration strategy that best suits their goals. In addition to his practice, Matthew is deeply involved in advocacy related to professional ethics and consumer protection.",
     expertise: ["Family Green Cards", "Employment Green Cards", "Students", "Work Permits"],
     languages: ["English"],
+    states: ["New York"],
     location: "159 20th Street, Ste 1B, Brooklyn, NY 11232",
     hours:
       "M: 8:00 am – 3:00 pm (EST)\nTu: 10:00 am – 5:00 pm (EST)\nW:  8:00 am – 3:00 pm  (EST)\nTh:  11:00 am – 3:00 pm (EST)\nFr:  8:00 am – 3:00 pm (EST)",
@@ -50,6 +51,7 @@ const users = [
       "TPS Applications",
     ],
     languages: ["English"],
+    states: ["Georgia"],
     location: "Georgia, United States",
     hours: "Thurs: 6:00-7:30 pm (ET)",
     phone: "(954) 235-2277",
@@ -58,12 +60,19 @@ const users = [
     key: "2",
   },
 ];
-////
+
+const state = [];
+
+const Item = ({ item, onPress, backgroundColor, textColor }) => (
+  <TouchableOpacity onPress={onPress} style={[styles.item, backgroundColor]}>
+    <Text style={[styles.title, textColor]}>{item.title}</Text>
+  </TouchableOpacity>
+);
 
 export const AppointmentScreen = ({ navigation }) => {
   //Term & Conditions State
   const [modalVisible, setModalVisible] = useState(true);
-
+  const [isFiltering, setisFiltering] = useState(false);
   //Expertise Dropdown
   const [expert_open, setExpertOpen] = useState(false);
   const [expert_value, setExpertValue] = useState(null);
@@ -104,109 +113,23 @@ export const AppointmentScreen = ({ navigation }) => {
     //     console.log(result);
     //   }
     // });
-
     return () => {
       mounted = false;
     };
   }, []);
 
+  useEffect(() => {
+    let mounted = true;
+    console.log("test");
+    setisFiltering(false);
+
+    return () => {
+      mounted = false;
+    };
+  }, [navigation.getParent]);
+
   //Attorney card list
   var cards = [];
-
-  //None selected; Expertise and Language is null.
-  if (expert_value === null && lang_value === null) {
-    var cards = users.map((u) => {
-      return (
-        <LegalCard
-          key={u.key}
-          name={u.name}
-          expertise={u.expertise}
-          languages={u.languages}
-          calendly={u.calendly}
-          onPress={() => navigation.navigate("calendar")}
-          linkedin={u.linkedin}
-          avvo={u.avvo}
-          otherlink={u.otherlink}
-          about={u.about}
-          location={u.location}
-          hours={u.hours}
-          phone={u.phone}
-        ></LegalCard>
-      );
-    });
-  }
-  //Expertise and Language is selected.
-  if (expert_value !== null && lang_value !== null) {
-    var cards = users
-      .map((u) => {
-        return u.expertise.includes(expert_value) && u.languages.includes(lang_value) ? (
-          <LegalCard
-            key={u.key}
-            name={u.name}
-            expertise={u.expertise}
-            languages={u.languages}
-            calendly={u.calendly}
-            onPress={() => navigation.navigate("calendar")}
-            linkedin={u.linkedin}
-            avvo={u.avvo}
-            otherlink={u.otherlink}
-            about={u.about}
-            location={u.location}
-            hours={u.hours}
-            phone={u.phone}
-          ></LegalCard>
-        ) : null;
-      })
-      .filter((e) => e !== null);
-  }
-  //Expertise is selected and Language is null.
-  if (expert_value !== null && lang_value === null) {
-    var cards = users
-      .map((u) => {
-        return u.expertise.includes(expert_value) ? (
-          <LegalCard
-            key={u.key}
-            name={u.name}
-            expertise={u.expertise}
-            languages={u.languages}
-            calendly={u.calendly}
-            onPress={() => navigation.navigate("calendar")}
-            linkedin={u.linkedin}
-            avvo={u.avvo}
-            otherlink={u.otherlink}
-            about={u.about}
-            location={u.location}
-            hours={u.hours}
-            phone={u.phone}
-          ></LegalCard>
-        ) : null;
-      })
-      .filter((e) => e !== null);
-  }
-  //Expertise is null and Language is selected.
-  if (expert_value === null && lang_value !== null) {
-    var cards = users
-      .map((u) => {
-        return u.languages.includes(lang_value) ? (
-          <LegalCard
-            key={u.key}
-            name={u.name}
-            expertise={u.expertise}
-            languages={u.languages}
-            calendly={u.calendly}
-            onPress={() => navigation.navigate("calendar")}
-            linkedin={u.linkedin}
-            avvo={u.avvo}
-            otherlink={u.otherlink}
-            about={u.about}
-            location={u.location}
-            hours={u.hours}
-            phone={u.phone}
-          ></LegalCard>
-        ) : null;
-      })
-      .filter((e) => e !== null);
-  }
 
   //Searchbar State
   const [searchJob, setSearchJob] = useState(null);
@@ -226,7 +149,7 @@ export const AppointmentScreen = ({ navigation }) => {
   }
 
   return (
-    <ScrollView style={{ paddingTop: 30, backgroundColor: "#F7F5F9", flex: 1 }}>
+    <View style={{ paddingTop: 30, backgroundColor: "#F7F5F9" }}>
       {/* //Terms and Conditions Modal */}
       <Overlay isVisible={modalVisible} overlayStyle={{ backgroundColor: "transparent" }}>
         <View>
@@ -277,139 +200,144 @@ export const AppointmentScreen = ({ navigation }) => {
         </View>
       </Overlay>
 
-      {/* Background Image "Wave" */}
-      <ImageBackground
-        source={require("../assets/img/legalwave.png")}
-        style={{ zIndex: -1 }}
-        imageStyle={{ opacity: 0.5 }}
-        resizeMode="cover"
-      >
-        {/* Legal Title Text */}
-        <View style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          {/* <Text style={styles.AsubTitle}>DIRECTORY</Text> */}
-          <Text style={styles.attorneyTitle}>Schedule an Appointment</Text>
-          <SearchBar
-            inputContainerStyle={{ backgroundColor: "white", borderRadius: 30, height: 35 }}
-            containerStyle={{
-              flex: 1,
-              marginTop: 20,
-              padding: 0,
-              width: "90%",
-              backgroundColor: "white",
-              borderRadius: 30,
-              borderWidth: 1,
-              borderTopColor: "#4C67F6",
-              borderEndColor: "#4C67F6",
-              borderColor: "#4C67F6",
-              borderBottomColor: "#4C67F6",
-            }}
-            placeholder="Search"
-            inputStyle={{ fontStyle: "italic", fontSize: 15 }}
-            value={searchJob}
-            onChangeText={(e) => setSearchJob(e)}
-          />
-        </View>
-        {/* <View style={{ paddingHorizontal: 30 }}> */}
-        {/* //Reset Button */}
-        {/* <TouchableOpacity onPress={() => resetAll()}>
-            <Text
-              style={{
-                color: "#3C65CC",
-                alignSelf: "flex-end",
-                paddingRight: 5,
-                fontStyle: "italic",
-                textDecorationLine: "underline",
+      <ScrollView>
+        {/* Background Image "Wave" */}
+        <ImageBackground
+          source={require("../assets/img/legalwave.png")}
+          style={{ zIndex: -1 }}
+          imageStyle={{ opacity: 0.5 }}
+          resizeMode="cover"
+        >
+          {/* Legal Title Text */}
+          <View style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            {/* <Text style={styles.AsubTitle}>DIRECTORY</Text> */}
+            <Text style={styles.attorneyTitle}>Schedule an Appointment</Text>
+            <SearchBar
+              inputContainerStyle={{ backgroundColor: "white", borderRadius: 30, height: 35 }}
+              containerStyle={{
+                flex: 1,
+                marginTop: 20,
+                padding: 0,
+                width: "90%",
+                backgroundColor: "white",
+                borderRadius: 30,
+                borderWidth: 1,
+                borderTopColor: "#4C67F6",
+                borderEndColor: "#4C67F6",
+                borderColor: "#4C67F6",
+                borderBottomColor: "#4C67F6",
               }}
+              placeholder="Search"
+              inputStyle={{ fontStyle: "italic", fontSize: 15 }}
+              value={searchJob}
+              onChangeText={(e) => setSearchJob(e)}
+            />
+            <Text
+              style={{ color: "blue", textAlign: "right", paddingTop: 10 }}
+              onPress={() => setisFiltering(true)}
             >
-              Reset All
+              Filters
             </Text>
-          </TouchableOpacity> */}
+          </View>
 
-        {/* //Dropdown for Expertise */}
-        {/* <Text style={{ fontWeight: "bold", fontSize: 16, marginTop: 25, color: "#3F3356" }}>
-            EXPERTISE TYPE:
-          </Text>
-          <DropDownPicker
-            onOpen={onExpertOpen}
-            open={expert_open}
-            searchable={false}
-            value={expert_value}
-            items={expert_items}
-            setOpen={setExpertOpen}
-            setValue={setExpertValue}
-            setItems={setExpertItems}
-            listMode="SCROLLVIEW"
-            placeholder="Select Attorney Expertise"
-            placeholderStyle={{ fontStyle: "italic" }}
-            maxHeight={150}
-            labelStyle={{ color: "#3F3356" }}
-            zIndex={3000}
-            zIndexInverse={1000}
-            dropDownContainerStyle={{
-              borderColor: "#4C67F6",
-              zIndex: 5,
-            }}
-            style={{
-              borderColor: "#4C67F6",
-              marginBottom: 15,
-              zIndex: 5,
-            }}
-            containerStyle={{ marginTop: 10 }}
-          /> */}
+          {/* //Results Text & Attorney Name Searchbar */}
+          <View style={{ padding: 30, flexDirection: "row", paddingBottom: 0 }}>
+            <Text style={styles.legalResults}> {users.length} Results</Text>
+          </View>
+        </ImageBackground>
 
-        {/* //Dropdown for "Language" Selection */}
-        {/* <Text style={{ fontWeight: "bold", fontSize: 16, color: "#3F3356" }}>LANGUAGE:</Text> */}
-        {/* <DropDownPicker
-            onOpen={onLangOpen}
-            open={lang_open}
-            searchable={false}
-            value={lang_value}
-            items={lang_items}
-            setOpen={setLangOpen}
-            setValue={setLangValue}
-            setItems={setLangItems}
-            listMode="SCROLLVIEW"
-            placeholder="Select Language Fluency"
-            placeholderStyle={{ fontStyle: "italic" }}
-            maxHeight={150}
-            labelStyle={{ color: "#3F3356" }}
-            zIndex={2000}
-            zIndexInverse={2000}
-            dropDownContainerStyle={{
-              borderColor: "#4C67F6",
-              zIndex: 1,
-            }}
-            style={{
-              borderColor: "#4C67F6",
-              marginBottom: 15,
-              zIndex: 1,
-            }}
-            containerStyle={{ marginTop: 10, marginBottom: 10 }}
-          /> */}
-        {/* </View> */}
-
-        {/* //Divider */}
-        {/* <Divider
-          style={{
-            height: 1.5,
-            backgroundColor: "#E6E6E6",
-            marginTop: 20,
-            borderRadius: 10,
-            alignSelf: "center",
-            width: "85%",
-            zIndex: -1,
-          }}
-        /> */}
-
-        {/* //Results Text & Attorney Name Searchbar */}
-        <View style={{ padding: 30, flexDirection: "row", paddingBottom: 0 }}>
-          <Text style={styles.legalResults}> {cards.length} Results</Text>
+        {/* Where the cards populate or appear */}
+        <View style={{ paddingHorizontal: 30, paddingBottom: 30, marginBottom: 15 }}>
+          {users.map((u) => (
+            <LegalCard
+              key={u.key}
+              name={u.name}
+              expertise={u.expertise}
+              languages={u.languages}
+              calendly={u.calendly}
+              onPress={() => navigation.navigate("calendar")}
+              linkedin={u.linkedin}
+              avvo={u.avvo}
+              otherlink={u.otherlink}
+              about={u.about}
+              location={u.location}
+              hours={u.hours}
+              phone={u.phone}
+              states={u.states}
+            ></LegalCard>
+          ))}
         </View>
-      </ImageBackground>
+      </ScrollView>
+      <View>
+        <Modal
+          animationType="slide"
+          visible={isFiltering}
+          presentationStyle={"pageSheet"}
+          onRequestClose={() => {
+            setisFiltering(!isFiltering);
+          }}
+        >
+          <View style={{ padding: 30 }}>
+            {/* Back button for Attorney Modal Profile */}
+            <Pressable onPress={() => setisFiltering(!isFiltering)}>
+              <AntDesign name="arrowleft" size={24} />
+            </Pressable>
+            {/* Attorney Default Profile Image*/}
+            <Card>
+              <Card.Title
+                style={{
+                  textAlign: "left",
+                  textTransform: "capitalize",
+                }}
+              >
+                state
+              </Card.Title>
+              <Card.Divider />
 
-      {/* Where the cards populate or appear */}
-      <View style={{ paddingHorizontal: 30, paddingBottom: 30, marginBottom: 15 }}>{cards}</View>
-    </ScrollView>
+              {/* <FlatList
+            data={DATA}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            extraData={selectedId}
+          /> */}
+            </Card>
+            <Card>
+              <Card.Title
+                style={{
+                  textAlign: "left",
+                  textTransform: "capitalize",
+                }}
+              >
+                expertise
+              </Card.Title>
+             <Card.Divider />
+            </Card>
+            <Card>
+              <Card.Title
+                style={{
+                  textAlign: "left",
+                  textTransform: "capitalize",
+                }}
+              >
+                language
+              </Card.Title>
+             <Card.Divider />
+            </Card>
+            <Card>
+              <Card.Title
+                style={{
+                  textAlign: "left",
+                  textTransform: "capitalize",
+                }}
+              >
+                stem
+              </Card.Title>
+             <Card.Divider />
+            </Card>
+          </View>
+        </Modal>
+      </View>
+    </View>
   );
 };
 
